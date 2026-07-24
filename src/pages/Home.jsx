@@ -1,4 +1,4 @@
-import libraryHero from '../assets/library-hero.svg'
+import libraryHero from '../assets/lib.png'
 import './Home.css'
 
 function Home() {

@@ -1,0 +1,120 @@
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 3rem 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero-text {
+  flex: 1;
+  min-width: 260px;
+}
+
+.hero-text h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0.75rem;
+  color: #264653;
+}
+
+.hero-text p {
+  font-size: 1.1rem;
+  color: #4a4a4a;
+  max-width: 42ch;
+}
+
+.hero-image {
+  flex: 1;
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+}
+
+.catalog {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.catalog-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.catalog-header h2 {
+  color: #264653;
+}
+
+.catalog-header input {
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 240px;
+  font-size: 1rem;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.book-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.book-card h3 {
+  margin: 0 0 0.35rem;
+  color: #264653;
+  font-size: 1.05rem;
+}
+
+.book-card .author {
+  color: #666;
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-Available {
+  background: #d8f3dc;
+  color: #1b4332;
+}
+
+.status-CheckedOut {
+  background: #ffe5d9;
+  color: #9d0208;
+}
+
+.status-Reserved {
+  background: #fff3b0;
+  color: #7f5539;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.25rem;
+  }
+
+  .hero-text p {
+    max-width: none;
+  }
+}

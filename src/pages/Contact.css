@@ -1,0 +1,51 @@
+.success-banner {
+  background: #d8f3dc;
+  color: #1b4332;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin-top: 1.5rem;
+}
+
+.contact-form label {
+  font-weight: 600;
+  color: #264653;
+  margin-bottom: 0.35rem;
+  margin-top: 1rem;
+}
+
+.contact-form label:first-of-type {
+  margin-top: 0;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.contact-form button {
+  margin-top: 1.5rem;
+  align-self: flex-start;
+  background: #264653;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.contact-form button:hover {
+  background: #1d3540;
+}

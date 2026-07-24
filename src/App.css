@@ -1,0 +1,18 @@
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.page h1 {
+  color: #264653;
+  margin-bottom: 1rem;
+}
+
+.site-footer {
+  background: #264653;
+  color: #e9ecef;
+  text-align: center;
+  padding: 1.1rem 1.5rem;
+  font-size: 0.9rem;
+}

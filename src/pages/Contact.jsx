@@ -20,11 +20,7 @@ function Contact() {
 
   return (
     <div className="page contact">
-      <h1>Contact the Library</h1>
-      <p>
-        Have a question about a book, a reservation, or your account? Send
-        us a message and the library team will get back to you.
-      </p>
+      <h1>Contact</h1>
 
       {submitted && (
         <div className="success-banner" role="status">

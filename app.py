@@ -16,10 +16,13 @@ Then open:
 """
 
 import json
+import mimetypes
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
 PORT = 8000
+ASSETS_DIR = (Path(__file__).parent / "assets").resolve()
 
 HERO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="libTitle">
   <title id="libTitle">Illustration of a library bookshelf</title>
@@ -127,6 +130,7 @@ p { margin: 0; }
 
 .page { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
 .page h1 { color: #264653; margin-bottom: 1rem; }
+.about-image { max-width: 320px; width: 100%; height: auto; display: block; margin-bottom: 1.25rem; border-radius: 12px; }
 
 .hero { display: flex; align-items: center; gap: 2.5rem; padding: 3rem 1.5rem; max-width: 1100px; margin: 0 auto; }
 .hero-text { flex: 1; min-width: 260px; }
@@ -135,31 +139,10 @@ p { margin: 0; }
 .hero-image { flex: 1; max-width: 420px; width: 100%; }
 .hero-image svg { width: 100%; height: auto; }
 
-.catalog { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
-.catalog-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
-.catalog-header h2 { color: #264653; }
-.catalog-header input { padding: 0.55rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; min-width: 240px; font-size: 1rem; }
-.book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
-.book-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 1.1rem 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.book-card h3 { margin: 0 0 0.35rem; color: #264653; font-size: 1.05rem; }
-.book-card .author { color: #666; margin: 0 0 0.75rem; font-size: 0.95rem; }
-.status { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
-.status-Available { background: #d8f3dc; color: #1b4332; }
-.status-CheckedOut { background: #ffe5d9; color: #9d0208; }
-.status-Reserved { background: #fff3b0; color: #7f5539; }
-
 @media (max-width: 720px) {
   .hero { flex-direction: column; text-align: center; padding: 2rem 1.25rem; }
   .hero-text p { max-width: none; }
 }
-
-.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1.75rem; }
-.about-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.about-card h2 { color: #264653; font-size: 1.15rem; margin-top: 0; }
-.about-card ul { padding-left: 1.1rem; margin: 0; }
-.about-card .hours { list-style: none; padding: 0; }
-.about-card .hours li { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid #f0f0f0; }
-.about-card .hours li:last-child { border-bottom: none; }
 
 .success-banner { background: #d8f3dc; color: #1b4332; padding: 0.75rem 1rem; border-radius: 8px; margin: 1rem 0; }
 .contact-form { display: flex; flex-direction: column; max-width: 480px; margin-top: 1.5rem; }
@@ -208,21 +191,7 @@ function Navbar({ page, setPage }) {
   );
 }
 
-const initialBooks = [
-  { id: 1, title: 'The Silent Ocean', author: 'Mara Lindqvist', status: 'Available' },
-  { id: 2, title: 'Atoms & Empires', author: 'D. R. Faulkner', status: 'Checked Out' },
-  { id: 3, title: 'Gardens of Rust', author: 'Priya Anand', status: 'Available' },
-  { id: 4, title: 'The Long Ledger', author: 'Wesley Okafor', status: 'Reserved' },
-  { id: 5, title: 'Midnight in Kyoto', author: 'Emi Sato', status: 'Available' },
-  { id: 6, title: 'Root & Branch', author: 'Callum Ward', status: 'Checked Out' },
-];
-
 function Home() {
-  const [query, setQuery] = useState('');
-  const filteredBooks = initialBooks.filter((book) =>
-    (book.title + ' ' + book.author).toLowerCase().includes(query.toLowerCase())
-  );
-
   return (
     <div className="home">
       <section className="hero">
@@ -232,30 +201,6 @@ function Home() {
         </div>
         <div className="hero-image" dangerouslySetInnerHTML={{ __html: __HERO_SVG_JSON__ }} />
       </section>
-
-      <section className="catalog">
-        <div className="catalog-header">
-          <h2>Book Catalog</h2>
-          <input
-            type="search"
-            placeholder="Search by title or author..."
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            aria-label="Search the book catalog"
-          />
-        </div>
-
-        <div className="book-grid">
-          {filteredBooks.map((book) => (
-            <div className="book-card" key={book.id}>
-              <h3>{book.title}</h3>
-              <p className="author">{book.author}</p>
-              <span className={"status status-" + book.status.replace(/\\s/g, '')}>{book.status}</span>
-            </div>
-          ))}
-          {filteredBooks.length === 0 && <p>No books match your search.</p>}
-        </div>
-      </section>
     </div>
   );
 }
@@ -263,35 +208,9 @@ function Home() {
 function About() {
   return (
     <div className="page about">
-      <h1>About CityLibrary</h1>
-      <p>
-        CityLibrary is a community library management system that helps
-        librarians and members keep track of books, availability, and
-        reservations in one simple dashboard.
-      </p>
-
-      <div className="about-grid">
-        <div className="about-card">
-          <h2>Our Mission</h2>
-          <p>Make books easy to find and easy to share, for every member of the community, regardless of background or experience with technology.</p>
-        </div>
-        <div className="about-card">
-          <h2>What We Offer</h2>
-          <ul>
-            <li>A searchable catalog of available titles</li>
-            <li>Live status on checked-out and reserved books</li>
-            <li>A simple way to reach the library team</li>
-          </ul>
-        </div>
-        <div className="about-card">
-          <h2>Opening Hours</h2>
-          <ul className="hours">
-            <li><span>Monday - Friday</span><span>9:00 AM - 8:00 PM</span></li>
-            <li><span>Saturday</span><span>10:00 AM - 5:00 PM</span></li>
-            <li><span>Sunday</span><span>Closed</span></li>
-          </ul>
-        </div>
-      </div>
+      <h1>About</h1>
+      <img className="about-image" src="/assets/about.png" alt="Open book illustration" />
+      <p>CityLibrary is a simple catalog and availability tracker for the community library.</p>
     </div>
   );
 }
@@ -314,8 +233,7 @@ function Contact() {
 
   return (
     <div className="page contact">
-      <h1>Contact the Library</h1>
-      <p>Have a question about a book, a reservation, or your account? Send us a message and the library team will get back to you.</p>
+      <h1>Contact</h1>
 
       {submitted && (
         <div className="success-banner" role="status">Thanks! Your message has been received.</div>
@@ -384,11 +302,28 @@ HTML_PAGE = """<!doctype html>
 
 class LibraryRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+        if self.path.startswith("/assets/"):
+            self.serve_asset()
+            return
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(HTML_PAGE)))
         self.end_headers()
         self.wfile.write(HTML_PAGE)
+
+    def serve_asset(self):
+        requested = ASSETS_DIR / Path(self.path[len("/assets/"):]).name
+        if not requested.is_file() or ASSETS_DIR not in requested.resolve().parents:
+            self.send_response(404)
+            self.end_headers()
+            return
+        content_type = mimetypes.guess_type(requested.name)[0] or "application/octet-stream"
+        data = requested.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     def log_message(self, format, *args):
         pass

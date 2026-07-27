@@ -1,15 +1,15 @@
-name: Deploy to Cloud Run
+name: Deploy Backend to Cloud Run
 
 on:
   push:
     branches: [main]
-    paths-ignore:
+    paths:
       - 'backend/**'
       - '.github/workflows/deploy-backend-cloudrun.yml'
   workflow_dispatch:
 
 env:
-  SERVICE: citylibrary
+  SERVICE: browse-by-author-api
   REGION: us-central1
 
 jobs:
@@ -36,7 +36,8 @@ jobs:
         with:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
-          source: .
+          source: ./backend
+          flags: --allow-unauthenticated
 
       - name: Show deployed URL
         run: echo "Deployed to ${{ steps.deploy.outputs.url }}"

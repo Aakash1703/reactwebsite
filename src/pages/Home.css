@@ -103,8 +103,15 @@
 .authors h2 {
   font-size: 1.6rem;
   color: #264653;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.4rem;
   text-align: center;
+}
+
+.authors-source {
+  text-align: center;
+  color: #5a6a70;
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
 }
 
 .authors-error {

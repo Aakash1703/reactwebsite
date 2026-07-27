@@ -13,15 +13,17 @@ const categories = [
 
 const AUTHORS_API_URL =
   'https://browse-by-author-api-lwbwu263ra-uc.a.run.app/browse-by-author'
+const AUTHORS_DB_API_URL =
+  'https://browse-by-author-api-lwbwu263ra-uc.a.run.app/browse-by-author-db'
 
-function Home() {
+function useAuthors(url) {
   const [authors, setAuthors] = useState([])
-  const [authorsError, setAuthorsError] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     let cancelled = false
 
-    fetch(AUTHORS_API_URL)
+    fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed with status ${res.status}`)
         return res.json()
@@ -30,13 +32,20 @@ function Home() {
         if (!cancelled) setAuthors(data.authors ?? [])
       })
       .catch((err) => {
-        if (!cancelled) setAuthorsError(err.message)
+        if (!cancelled) setError(err.message)
       })
 
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [url])
+
+  return { authors, error }
+}
+
+function Home() {
+  const { authors, error: authorsError } = useAuthors(AUTHORS_API_URL)
+  const { authors: authorsDb, error: authorsDbError } = useAuthors(AUTHORS_DB_API_URL)
 
   return (
     <div className="home">
@@ -69,7 +78,8 @@ function Home() {
       </section>
 
       <section className="authors">
-        <h2>Browse by Author</h2>
+        <h2>Browse by Author (API)</h2>
+        <p className="authors-source">Served from an in-memory list in FastAPI</p>
         {authorsError && (
           <p className="authors-error">Couldn't load authors: {authorsError}</p>
         )}
@@ -77,6 +87,22 @@ function Home() {
           {authors.map((author) => (
             <div className="author-tile" key={author}>
               <span className="author-icon">✍️</span>
+              <h3>{author}</h3>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="authors">
+        <h2>Browse by Author (Database)</h2>
+        <p className="authors-source">Served from a SQLite database queried by FastAPI</p>
+        {authorsDbError && (
+          <p className="authors-error">Couldn't load authors: {authorsDbError}</p>
+        )}
+        <div className="author-grid">
+          {authorsDb.map((author) => (
+            <div className="author-tile" key={author}>
+              <span className="author-icon">🗄️</span>
               <h3>{author}</h3>
             </div>
           ))}

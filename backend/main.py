@@ -23,6 +23,7 @@ AUTHORS = [
     "Ernest Hemingway",
     "Chimamanda Ngozi Adichie",
     "F. Scott Fitzgerald",
+    "Haruki Murakami",
 ]
 
 DB_PATH = Path(__file__).parent / "authors.db"

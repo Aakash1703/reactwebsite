@@ -6,11 +6,12 @@ FastAPI service for CityLibrary that exposes a hardcoded list of authors.
 
 - `GET /` — health check
 - `GET /browse-by-author` — returns `{"authors": [...]}` from the hardcoded `AUTHORS` list
-- `GET /browse-by-author-db` — returns `{"authors": [...]}` queried from a bundled SQLite
-  database (`authors.db`), seeded from `AUTHORS` on first startup. Demonstrates a DB-backed
-  version of the same data alongside the in-memory one. Note: since the DB file lives in the
-  container filesystem, it resets on every redeploy/new instance — fine for a demo, not for
-  production persistence.
+- `GET /browse-by-author-db` — returns `{"authors": [...]}` queried from `authors.db`, a
+  SQLite database committed to this repo and copied into the Docker image at build time.
+  Demonstrates a DB-backed version of the same data alongside the in-memory one. To change
+  the DB-backed list, edit `authors.db` directly (see below) and commit it — edits made to
+  the file inside a running container are lost when that instance restarts, since each new
+  container starts fresh from the image.
 
 ## Run locally
 

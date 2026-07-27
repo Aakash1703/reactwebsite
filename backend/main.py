@@ -19,6 +19,7 @@ AUTHORS = [
     "Toni Morrison",
     "Ernest Hemingway",
     "Chimamanda Ngozi Adichie",
+    "F. Scott Fitzgerald",
 ]
 
 

@@ -22,6 +22,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Write .env for Vite build
+        run: |
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:

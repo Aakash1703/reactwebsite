@@ -4,6 +4,7 @@ import './Books.css'
 
 const BOOKS_TABLE = import.meta.env.VITE_BOOKS_TABLE || 'books'
 const AUTHORS_TABLE = import.meta.env.VITE_AUTHORS_TABLE || 'authors'
+const AUTHORS_API_URL = import.meta.env.VITE_AUTHORS_API_URL
 
 function useAuthorOptions() {
   const [authors, setAuthors] = useState([])
@@ -12,14 +13,15 @@ function useAuthorOptions() {
   useEffect(() => {
     let cancelled = false
 
-    supabase
-      .from(AUTHORS_TABLE)
-      .select('id, name')
-      .order('name', { ascending: true })
-      .then(({ data, error: fetchError }) => {
+    fetch(`${AUTHORS_API_URL}/browse-by-author-db`)
+      .then((response) => response.json())
+      .then((data) => {
         if (cancelled) return
-        if (fetchError) setError(fetchError.message)
-        else setAuthors(data ?? [])
+        setAuthors(data.authors ?? [])
+      })
+      .catch((fetchError) => {
+        if (cancelled) return
+        setError(fetchError.message)
       })
 
     return () => {

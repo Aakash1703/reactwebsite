@@ -99,9 +99,9 @@ function Home() {
         )}
         <div className="author-grid">
           {authorsDb.map((author) => (
-            <div className="author-tile" key={author}>
+            <div className="author-tile" key={author.id}>
               <span className="author-icon">🗄️</span>
-              <h3>{author}</h3>
+              <h3>{author.name}</h3>
             </div>
           ))}
         </div>

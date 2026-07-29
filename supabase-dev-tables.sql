@@ -68,7 +68,7 @@ create table if not exists public.users_dev (
 -- STEP 5: sessions_dev table (references users_dev, so must run after Step 4)
 create table if not exists public.sessions_dev (
   id bigint generated always as identity primary key,
-  user_id bigint not null references public.users_dev (id) on delete cascade,
+  user_id bigint not null references public.users_dev (id) on delete cascade, 
   token text not null unique,
   created_at timestamptz not null default now(),
   expires_at timestamptz not null

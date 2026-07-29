@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-export const AUTH_API_URL = 'https://db-lwbwu263ra-uc.a.run.app'
+export const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL
 
 const TOKEN_KEY = 'citylibrary_token'
 const USER_KEY = 'citylibrary_user'

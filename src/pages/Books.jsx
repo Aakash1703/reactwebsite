@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import './Books.css'
 
+const BOOKS_TABLE = import.meta.env.VITE_BOOKS_TABLE || 'books'
+const AUTHORS_TABLE = import.meta.env.VITE_AUTHORS_TABLE || 'authors'
+
 function useAuthorOptions() {
   const [authors, setAuthors] = useState([])
   const [error, setError] = useState(null)
@@ -10,7 +13,7 @@ function useAuthorOptions() {
     let cancelled = false
 
     supabase
-      .from('authors')
+      .from(AUTHORS_TABLE)
       .select('id, name')
       .order('name', { ascending: true })
       .then(({ data, error: fetchError }) => {
@@ -37,8 +40,8 @@ function useBookList(refreshKey) {
     setLoading(true)
 
     supabase
-      .from('books')
-      .select('id, name, price, author_id, authors(name)')
+      .from(BOOKS_TABLE)
+      .select(`id, name, price, author_id, ${AUTHORS_TABLE}(name)`)
       .order('id', { ascending: false })
       .then(({ data, error: fetchError }) => {
         if (cancelled) return
@@ -163,7 +166,7 @@ function Books() {
     }
 
     setSubmitting(true)
-    const { error } = await supabase.from('books').insert({
+    const { error } = await supabase.from(BOOKS_TABLE).insert({
       name: name.trim(),
       price: Number(price),
       author_id: authorId,
@@ -229,7 +232,7 @@ function Books() {
 
     setEditSubmitting(true)
     const { error } = await supabase
-      .from('books')
+      .from(BOOKS_TABLE)
       .update(pendingEdit)
       .eq('id', editingBook.id)
     setEditSubmitting(false)
@@ -263,7 +266,7 @@ function Books() {
     if (!deletingBook) return
 
     setIsDeleting(true)
-    const { error } = await supabase.from('books').delete().eq('id', deletingBook.id)
+    const { error } = await supabase.from(BOOKS_TABLE).delete().eq('id', deletingBook.id)
     setIsDeleting(false)
 
     if (error) {
@@ -320,8 +323,8 @@ function Books() {
               <span className="book-icon">📗</span>
               <h3>{book.name}</h3>
               <p className="book-price">${Number(book.price).toFixed(2)}</p>
-              {book.authors?.name && (
-                <p className="book-author">{book.authors.name}</p>
+              {book[AUTHORS_TABLE]?.name && (
+                <p className="book-author">{book[AUTHORS_TABLE].name}</p>
               )}
             </div>
           ))}

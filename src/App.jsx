@@ -1,9 +1,12 @@
 import { Routes, Route, NavLink } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './pages/Home.jsx'
 import Books from './pages/Books.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
+import Login from './pages/Login.jsx'
+import Register from './pages/Register.jsx'
 import './App.css'
 
 function App() {
@@ -12,10 +15,40 @@ function App() {
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/books" element={<Books />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/books"
+            element={
+              <ProtectedRoute>
+                <Books />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <ProtectedRoute>
+                <About />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <ProtectedRoute>
+                <Contact />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <footer className="site-footer">

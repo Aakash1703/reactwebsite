@@ -42,3 +42,14 @@ create policy "Public can delete books"
   for delete
   to anon
   using (true);
+
+
+-- STEP 2 (run later, once main.py's /books endpoints are live): book writes
+-- now go through the FastAPI backend (which uses the secret service-role key
+-- and requires a valid login JWT), the same way /register and /login already
+-- handle the users/sessions tables. Drop the anon write policies above so the
+-- anon key -- still used by the frontend for reads -- can no longer insert,
+-- update, or delete rows directly. Select stays public.
+drop policy if exists "Public can insert books" on public.books;
+drop policy if exists "Public can update books" on public.books;
+drop policy if exists "Public can delete books" on public.books;

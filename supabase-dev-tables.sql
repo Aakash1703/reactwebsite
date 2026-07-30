@@ -89,3 +89,14 @@ from information_schema.tables
 where table_schema = 'public'
   and table_name in ('authors_dev', 'books_dev', 'users_dev', 'sessions_dev')
 order by table_name;
+
+
+-- STEP 8 (run later, once main.py's /books endpoints are live and db-dev has
+-- BOOKS_TABLE=books_dev set): book writes now go through the FastAPI backend
+-- (secret service-role key + a valid login JWT), same as users_dev/sessions_dev
+-- already work. Drop the anon write policies from Step 3 so the anon key --
+-- still used by the frontend for reads -- can no longer insert, update, or
+-- delete rows directly. Select stays public.
+drop policy if exists "Public can insert books_dev" on public.books_dev;
+drop policy if exists "Public can update books_dev" on public.books_dev;
+drop policy if exists "Public can delete books_dev" on public.books_dev;

@@ -1,10 +1,49 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { AUTH_API_URL, useAuth } from '../context/AuthContext'
 import './Books.css'
 
 const BOOKS_TABLE = import.meta.env.VITE_BOOKS_TABLE || 'books'
 const AUTHORS_TABLE = import.meta.env.VITE_AUTHORS_TABLE || 'authors'
 const AUTHORS_API_URL = import.meta.env.VITE_AUTHORS_API_URL
+
+async function parseJson(response) {
+  try {
+    return await response.json()
+  } catch {
+    return {}
+  }
+}
+
+async function submitBook({ token, method, url, name, price, authorId }) {
+  const response = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, price, author_id: Number(authorId) }),
+  })
+  const data = await parseJson(response)
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Could not save the book.')
+  }
+
+  return data.book
+}
+
+async function deleteBookRequest({ token, bookId }) {
+  const response = await fetch(`${AUTH_API_URL}/books/${bookId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const data = await parseJson(response)
+
+  if (!response.ok) {
+    throw new Error(data.detail || 'Could not delete the book.')
+  }
+}
 
 function useAuthorOptions() {
   const [authors, setAuthors] = useState([])
@@ -133,6 +172,7 @@ function BookForm({
 }
 
 function Books() {
+  const { token } = useAuth()
   const { authors, error: authorsError } = useAuthorOptions()
   const [refreshKey, setRefreshKey] = useState(0)
   const { books, error: booksError, loading: booksLoading } = useBookList(refreshKey)
@@ -168,17 +208,21 @@ function Books() {
     }
 
     setSubmitting(true)
-    const { error } = await supabase.from(BOOKS_TABLE).insert({
-      name: name.trim(),
-      price: Number(price),
-      author_id: authorId,
-    })
-    setSubmitting(false)
-
-    if (error) {
-      setSubmitError(error.message)
+    try {
+      await submitBook({
+        token,
+        method: 'POST',
+        url: `${AUTH_API_URL}/books`,
+        name: name.trim(),
+        price: Number(price),
+        authorId,
+      })
+    } catch (err) {
+      setSubmitting(false)
+      setSubmitError(err.message)
       return
     }
+    setSubmitting(false)
 
     setSubmitted(true)
     setName('')
@@ -233,17 +277,23 @@ function Books() {
     if (!pendingEdit || !editingBook) return
 
     setEditSubmitting(true)
-    const { error } = await supabase
-      .from(BOOKS_TABLE)
-      .update(pendingEdit)
-      .eq('id', editingBook.id)
-    setEditSubmitting(false)
-    setPendingEdit(null)
-
-    if (error) {
-      setEditError(error.message)
+    try {
+      await submitBook({
+        token,
+        method: 'PUT',
+        url: `${AUTH_API_URL}/books/${editingBook.id}`,
+        name: pendingEdit.name,
+        price: pendingEdit.price,
+        authorId: pendingEdit.author_id,
+      })
+    } catch (err) {
+      setEditSubmitting(false)
+      setPendingEdit(null)
+      setEditError(err.message)
       return
     }
+    setEditSubmitting(false)
+    setPendingEdit(null)
 
     setEditSuccess(true)
     setRefreshKey((key) => key + 1)
@@ -268,13 +318,14 @@ function Books() {
     if (!deletingBook) return
 
     setIsDeleting(true)
-    const { error } = await supabase.from(BOOKS_TABLE).delete().eq('id', deletingBook.id)
-    setIsDeleting(false)
-
-    if (error) {
-      setDeleteError(error.message)
+    try {
+      await deleteBookRequest({ token, bookId: deletingBook.id })
+    } catch (err) {
+      setIsDeleting(false)
+      setDeleteError(err.message)
       return
     }
+    setIsDeleting(false)
 
     setDeletingBook(null)
     setRefreshKey((key) => key + 1)

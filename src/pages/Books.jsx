@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { API_URL, useAuth } from '../context/AuthContext'
 import './Books.css'
 
-const AUTHORS_TABLE = import.meta.env.VITE_AUTHORS_TABLE || 'authors'
+const AUTHORS_TABLE = 'authors'
 
 async function parseJson(response) {
   try {

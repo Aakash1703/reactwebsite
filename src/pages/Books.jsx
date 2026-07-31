@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { AUTH_API_URL, useAuth } from '../context/AuthContext'
+import { API_URL, useAuth } from '../context/AuthContext'
 import './Books.css'
 
 const AUTHORS_TABLE = import.meta.env.VITE_AUTHORS_TABLE || 'authors'
-const AUTHORS_API_URL = import.meta.env.VITE_AUTHORS_API_URL
 
 async function parseJson(response) {
   try {
@@ -32,7 +31,7 @@ async function submitBook({ token, method, url, name, price, authorId }) {
 }
 
 async function deleteBookRequest({ token, bookId }) {
-  const response = await fetch(`${AUTH_API_URL}/books/${bookId}`, {
+  const response = await fetch(`${API_URL}/books/${bookId}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -50,7 +49,7 @@ function useAuthorOptions() {
   useEffect(() => {
     let cancelled = false
 
-    fetch(`${AUTHORS_API_URL}/author-db`)
+    fetch(`${API_URL}/author-db`)
       .then((response) => response.json())
       .then((data) => {
         if (cancelled) return
@@ -78,7 +77,7 @@ function useBookList(refreshKey) {
     let cancelled = false
     setLoading(true)
 
-    fetch(`${AUTH_API_URL}/books`)
+    fetch(`${API_URL}/books`)
       .then((response) => response.json())
       .then((data) => {
         if (cancelled) return
@@ -212,7 +211,7 @@ function Books() {
       await submitBook({
         token,
         method: 'POST',
-        url: `${AUTH_API_URL}/books`,
+        url: `${API_URL}/books`,
         name: name.trim(),
         price: Number(price),
         authorId,
@@ -281,7 +280,7 @@ function Books() {
       await submitBook({
         token,
         method: 'PUT',
-        url: `${AUTH_API_URL}/books/${editingBook.id}`,
+        url: `${API_URL}/books/${editingBook.id}`,
         name: pendingEdit.name,
         price: pendingEdit.price,
         authorId: pendingEdit.author_id,

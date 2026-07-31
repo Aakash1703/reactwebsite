@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import libraryHero from '../assets/lib.png'
+import { API_URL } from '../context/AuthContext'
 import './Home.css'
 
 const categories = [
@@ -11,8 +12,8 @@ const categories = [
   { icon: '📜', name: 'Biography', description: 'Lives worth reading about' },
 ]
 
-const AUTHORS_API_URL = 'https://db-dev-887210247628.us-central1.run.app/author-hardcoded'
-const AUTHORS_DB_API_URL = 'https://db-dev-887210247628.us-central1.run.app/author-db'
+const AUTHORS_API_URL = `${API_URL}/author-hardcoded`
+const AUTHORS_DB_API_URL = `${API_URL}/author-db`
 
 function useAuthors(url) {
   const [authors, setAuthors] = useState([])

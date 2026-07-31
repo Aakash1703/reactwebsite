@@ -26,8 +26,7 @@ jobs:
         run: |
           echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
-          echo "VITE_AUTH_API_URL=https://db-lwbwu263ra-uc.a.run.app" >> .env
-          echo "VITE_AUTHORS_API_URL=https://db-dev-887210247628.us-central1.run.app" >> .env
+          echo "VITE_API_URL=https://db-lwbwu263ra-uc.a.run.app" >> .env
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -61,10 +60,8 @@ jobs:
         run: |
           echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
-          echo "VITE_AUTH_API_URL=https://db-dev-887210247628.us-central1.run.app" >> .env
-          echo "VITE_AUTHORS_API_URL=https://db-dev-887210247628.us-central1.run.app" >> .env
+          echo "VITE_API_URL=https://db-dev-887210247628.us-central1.run.app" >> .env
           echo "VITE_AUTHORS_TABLE=authors_dev" >> .env
-          echo "VITE_BOOKS_TABLE=books_dev" >> .env
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2

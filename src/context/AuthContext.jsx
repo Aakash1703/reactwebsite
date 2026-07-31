@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-export const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL
+export const API_URL = import.meta.env.VITE_API_URL
 
 const TOKEN_KEY = 'citylibrary_token'
 const USER_KEY = 'citylibrary_user'
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
   }
 
   const register = async ({ username, email, password }) => {
-    const response = await fetch(`${AUTH_API_URL}/register`, {
+    const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, password }),
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   }
 
   const login = async ({ email, password }) => {
-    const response = await fetch(`${AUTH_API_URL}/login`, {
+    const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

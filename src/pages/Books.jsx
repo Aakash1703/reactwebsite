@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
 import { AUTH_API_URL, useAuth } from '../context/AuthContext'
 import './Books.css'
 
-const BOOKS_TABLE = import.meta.env.VITE_BOOKS_TABLE || 'books'
 const AUTHORS_TABLE = import.meta.env.VITE_AUTHORS_TABLE || 'authors'
 const AUTHORS_API_URL = import.meta.env.VITE_AUTHORS_API_URL
 
@@ -80,14 +78,16 @@ function useBookList(refreshKey) {
     let cancelled = false
     setLoading(true)
 
-    supabase
-      .from(BOOKS_TABLE)
-      .select(`id, name, price, author_id, ${AUTHORS_TABLE}(name)`)
-      .order('id', { ascending: false })
-      .then(({ data, error: fetchError }) => {
+    fetch(`${AUTH_API_URL}/books`)
+      .then((response) => response.json())
+      .then((data) => {
         if (cancelled) return
-        if (fetchError) setError(fetchError.message)
-        else setBooks(data ?? [])
+        setBooks(data.books ?? [])
+        setLoading(false)
+      })
+      .catch((fetchError) => {
+        if (cancelled) return
+        setError(fetchError.message)
         setLoading(false)
       })
 

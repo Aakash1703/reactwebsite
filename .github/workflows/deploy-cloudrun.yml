@@ -24,8 +24,6 @@ jobs:
 
       - name: Write .env for Vite build
         run: |
-          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
-          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
           echo "VITE_API_URL=https://db-lwbwu263ra-uc.a.run.app" >> .env
 
       - name: Authenticate to Google Cloud

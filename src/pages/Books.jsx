@@ -52,7 +52,7 @@ function useAuthorOptions() {
   useEffect(() => {
     let cancelled = false
 
-    fetch(`${AUTHORS_API_URL}/browse-by-author-db`)
+    fetch(`${AUTHORS_API_URL}/author-db`)
       .then((response) => response.json())
       .then((data) => {
         if (cancelled) return
